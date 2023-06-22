@@ -1,6 +1,6 @@
 #学籍番号:1213033118
 #氏　　名:浜田義正
-#内　　容:NaturalSpline+を使用した曲線と真値の差について
+#内　　容:NaturalSpline+を使用した4区間の波形の近似曲線について
 
 import matplotlib
 import matplotlib.pyplot as plot
@@ -53,8 +53,8 @@ def Draw(px,py,a,b,c,d):
     #スプライン曲線
     for j in range(N):
         xj = px[j]; xk = px[j+1] #区間の両端の座標
-        M = 10 # 区間をM分割
         qx = []; qy = [] #座標
+        M = 100 # 区間をM分割
         for i in range(M+1):
             x = xi(i,xj,xk,M)
             y = a[j]*(x-xj)**3+b[j]*(x-xj)**2+c[j]*(x-xj)+d[j]
@@ -62,11 +62,7 @@ def Draw(px,py,a,b,c,d):
             qy += [y]
         graph.plot(qx,qy) #線を描画
 
-    x1 = np.linspace(-1, 1, 500)
-    y1 = f(x1)
-    graph.plot(x1,y1)
     graph.scatter(px,py,s=30,c="red") #点を描画
-    graph.scatter(x1,y1,s=0,c="red") #点を描画
 
     plot.show() #表示
 
@@ -109,25 +105,20 @@ def NaturalSpline(N,px,py):
 
     return a,b,c,d
 
-# 関数
-def f(x):
-    return 1/(1+25*x**2)
 # 範囲[xs,xe]
 xs = -1.0; xe = 1.0
 
 #実行
-N = 10 #点数
-px = [] #x座標
-py = [] #y座標
-for i in range(N+1):
-    x= xi(i,xs,xe,N)
-    y = f(x)
-    px += [x]
-    py += [y]
+N = 4 #点数
+px = [-1,-0.5,0,0.5,1]; py = [0,1,0,-1,0]
+N1 = 8 #点数
+px1 = [-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1]; py1 = [0,0.5,1,0.5,0,-0.5,-1,-0.5,0]
 
 a,b,c,d = NaturalSpline(N,px,py)
+e,f,g,h = NaturalSpline(N1,px1,py1)
 
 Draw(px,py,a,b,c,d) #描画
+Draw(px1,py1,e,f,g,h) #描画
 
 
 #input("[Enter]キーを押して終了")　#コメントアウト
